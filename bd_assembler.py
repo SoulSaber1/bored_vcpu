@@ -1,9 +1,14 @@
 #!/usr/bin/python2
 
+'''
+This is the assembler I wrote for the bored assembly
+I also wrote
+'''
+
 import sys
 import struct
 
-csm_file = open("code.csm")
+csm_file = open("code.bd")
 code_file = open("code", "wb")
 
 def pack(a):

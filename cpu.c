@@ -90,10 +90,10 @@ int emulate(){
   return reg[0];
 }
 
-
 int main(int argc, char **argv){
   printf("Begin emulation:\n\n");
   int ret = emulate();
   printf("End emulation\n");
   return ret;
 }
+

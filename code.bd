@@ -1,3 +1,4 @@
+;this is a sample program written for the bored architecture
 mov r0 4
 mov r1 r0
 display

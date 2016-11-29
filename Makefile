@@ -1,2 +1,2 @@
 all:
-	gcc -m32 emulator.c -o emu
+	gcc -m32 cpu.c -o bored_cpu

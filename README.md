@@ -1,11 +1,14 @@
-# custom_cpu
+# assembler and vcpu for the bored architecture
 
-I made this project to try to instrument a custom CPU, as well as an
-assembler, and a custom assembly language. If you find this useful, cool.
+I was bored, so I made some stuff, and called the architecture bored.
+
+I made this project to try to instrument a custom architecture, as well as an
+assembler, assemlby language, and virtual cpu that are all designed to support
+and run the bored architecture. If you find this useful, cool.
 
 Progress will be ongoing, and might be slow.
 
-The compiler.py file will read the code.csm file, and assemble it into the code file.
+The bored_assembler.py file will read the code.bd file, and assemble it into the code file.
 
 
 Every instruction is 32 bytes long. This doesn't really matter for now, but will
