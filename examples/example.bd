@@ -1,9 +1,14 @@
 ;this is a sample program written for the bored architecture
 mov r0 4
 mov r1 r0
-display
+cpu
 mov r2 5
 cmp r0 r2
 je 1
 mov r0 0
+mov [0] 5
+mem
+cpu
+mov r1 [0]
+add r3 [0]
 exit

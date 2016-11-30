@@ -55,7 +55,7 @@ for l in csm_file.readlines():
         print cur
 
     #utility
-    if cur[0] == ";":
+    if cur[0][0] == ";":
         pass
     elif cur[0] == "exit":
         write([0x00])
@@ -120,6 +120,7 @@ for l in csm_file.readlines():
     #stop on unknown instruction
     else:
         print "Instruction not understood"
+        print cur
         csm_file.close()
         code_file.close()
         exit(-2)

@@ -4,12 +4,12 @@
 unsigned int *code;
 unsigned int *mem;
 
-struct cpu {
-  unsigned int reg[4] = {0,0,0,0};
-  unsigned int cmp = 0;
-  unsigned int pc = 0;
-  char hlt = 0;
-};
+
+unsigned int reg[4] = {0,0,0,0};
+unsigned int cmp = 0;
+unsigned int pc = 0;
+char hlt = 0;
+
 
 #define incpc pc+=4
 #define CODE_SIZE 128
@@ -18,7 +18,7 @@ struct cpu {
 void print_cpu_state(){
   printf("CPU State:\nr0:  0x%08x\nr1:  0x%08x\n"
   "r2:  0x%08x\nr3:  0x%08x\ncmp: 0x%08x\npc:  0x%08x\nhlt: 0x%x\n\n",
-  cpu->reg[0],cpu->reg[1],cpu->reg[2],cpu->reg[3],cpu->cmp,cpu->pc,cpu->hlt);
+  reg[0],reg[1],reg[2],reg[3],cmp,pc,hlt);
 }
 
 void print_mem_state(){
@@ -33,7 +33,7 @@ void cpu(){
   int op = code[pc];
   switch (op){
     case 0x0:       //set hlt
-      cpu->hlt = 1;
+      hlt = 1;
       incpc;
       break;
 
