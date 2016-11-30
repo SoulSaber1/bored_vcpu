@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int *code;
-int *mem;
+unsigned int *code;
+unsigned int *mem;
 unsigned int reg[4] = {0,0,0,0};
 unsigned int cmp = 0;
 unsigned int pc = 0;
 unsigned int hlt = 0;
 
 #define incpc pc+=4
+#define CODE_SIZE 128
+#define MEM_SIZE 64
 
 void print_cpu_state(){
   printf("CPU State:\nr0:  0x%x\nr1:  0x%x\n"
@@ -18,9 +20,10 @@ void print_cpu_state(){
 
 void print_mem_state(){
   printf("MEM Contents:\n");
-  for(int i=0; i<1024; i++){
-    printf("%x", mem[i]);
+  for(int i=0; i<MEM_SIZE; i++){
+    printf("0x%08x ", mem[i]);
   }
+  printf("\n");
 }
 
 void cpu(){
@@ -30,6 +33,7 @@ void cpu(){
       hlt = 1;
       incpc;
       break;
+
     //mov family opcodes
     case 0x1:       //mov regA->regB
       reg[code[pc+1]] = reg[code[pc+2]];
@@ -37,6 +41,18 @@ void cpu(){
       break;
     case 0x2:       //mov val->reg
       reg[code[pc+1]] = code[pc+2];
+      incpc;
+      break;
+    case 0x3:       //mov reg->mem
+      mem[code[pc+1]] = reg[code[pc+2]];
+      incpc;
+      break;
+    case 0x4:       //mov val->mem
+      mem[code[pc+1]] = code[pc+2];
+      incpc;
+      break;
+    case 0x5:       //mov mem->reg
+      reg[code[pc+1]] = mem[code[pc+2]];
       incpc;
       break;
 
@@ -48,15 +64,27 @@ void cpu(){
 
     //math
     case 0x20:      //add rA to rB; store rA
-      reg[0] = reg[code[pc+1]]+reg[code[pc+2]];
+      reg[code[pc+1]] = reg[code[pc+1]]+reg[code[pc+2]];
+      incpc;
+      break;
+    case 0x21:      //add v1 to rA; store rA
+      reg[code[pc+1]] = reg[code[pc+1]]+code[pc+2];
+      incpc;
+      break;
+    case 0x25:      //sub rB from rA; store rA
+      reg[code[pc+1]] = reg[code[pc+1]]-reg[code[pc+2]];
+      incpc;
+      break;
+    case 0x26:      //sub v1 from rA; store rA
+      reg[code[pc+1]] = reg[code[pc+1]]-code[pc+2];
       incpc;
       break;
 
     //jmp family opcodes
-    case 0x30:       //jmp
+    case 0x40:       //jmp
       pc += code[pc+1];
       break;
-    case 0x31:       //je
+    case 0x41:       //je
       if(cmp){ pc += code[pc+1]; }
       else { incpc; }
       break;
@@ -66,11 +94,17 @@ void cpu(){
       incpc;
       break;
     case 0x91:      //print register info
-      incpc;
       printf("\nREG DIS CALL\n");
       print_cpu_state();
+      incpc;
+      break;
+    case 0x92:      //print memory info
+      printf("\nMEM DIS CALL\n");
+      print_mem_state();
+      incpc;
       break;
     default:
+      printf("INVALID OPCODE\n");
       hlt = 1;
       incpc;
       break;
@@ -87,8 +121,8 @@ void get_code(char *filename){
 }
 
 int emulate(char *filename){
-  code = (int *)calloc(4096, sizeof(char));
-  mem = (int *)calloc(1024, sizeof(char));
+  code = (unsigned int *)calloc(CODE_SIZE, sizeof(int));
+  mem = (unsigned int *)calloc(MEM_SIZE, sizeof(int));
   get_code(filename);
   unsigned int old_pc = -1;
   while(!hlt && old_pc != pc){
