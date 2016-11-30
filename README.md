@@ -17,9 +17,16 @@ eventually facilitate more instructions. Probably.
 ####The following instructions are currently supported by bored:
 **Unless otherwise stated, it generally follows Intel syntax**
 
- - mov register register
- - mov register value
- - mov register memory
- - mov memory value 
+ - mov
+ - add
+ - sub
+ - halt
+ - cmp
+ - jmp
+ - nop
+ 
+ **"syscalls"**
+ - cpu = display the current CPU state
+ - mem = display the current MEM state
 
 
