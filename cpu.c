@@ -8,10 +8,12 @@ unsigned int cmp = 0;
 unsigned int pc = 0;
 unsigned int hlt = 0;
 
+#define incpc pc+=4
+
 void print_cpu_state(){
   printf("CPU State:\nr0:  0x%x\nr1:  0x%x\n"
-    "r2:  0x%x\nr3:  0x%x\ncmp: 0x%x\npc:  0x%x\nhlt: 0x%x\n\n",
-    reg[0],reg[1],reg[2],reg[3],cmp,pc,hlt);
+  "r2:  0x%x\nr3:  0x%x\ncmp: 0x%x\npc:  0x%x\nhlt: 0x%x\n\n",
+  reg[0],reg[1],reg[2],reg[3],cmp,pc,hlt);
 }
 
 void print_mem_state(){
@@ -25,23 +27,28 @@ void cpu(){
   int op = code[pc];
   switch (op){
     case 0x0:       //set hlt
-      pc += 4;
       hlt = 1;
+      incpc;
       break;
     //mov family opcodes
     case 0x1:       //mov val->reg
       reg[code[pc+1]] = code[pc+2];
-      pc += 4;
+      incpc;
       break;
     case 0x2:       //mov regA->regB
       reg[code[pc+1]] = reg[code[pc+2]];
-      pc += 4;
+      incpc;
       break;
 
     //cmp family
     case 0x10:       //compare rA and rB
       cmp = (reg[code[pc+1]] == reg[code[pc+2]]);
-      pc += 4;
+      incpc;
+      break;
+
+    case 0x20:      //add rA to rB; store rA
+      reg[0] = reg[code[pc+1]]+reg[code[pc+2]];
+      incpc;
       break;
 
     //jmp family opcodes
@@ -50,20 +57,21 @@ void cpu(){
       break;
     case 0x31:       //je
       if(cmp){ pc += code[pc+1]; }
-      else { pc += 4; }
+      else { incpc; }
       break;
 
     //other utility opcodes
     case 0x90:      //nop
-      pc += 4;
+      incpc;
       break;
     case 0x91:      //print register info
-      pc += 4;
+      incpc;
       printf("\nREG DIS CALL\n");
       print_cpu_state();
       break;
     default:
-      pc += 4;
+      hlt = 1;
+      incpc;
       break;
   }
 }
