@@ -37,11 +37,13 @@ void cpu(){
       reg[code[pc+1]] = reg[code[pc+2]];
       pc += 4;
       break;
+
     //cmp family
     case 0x10:       //compare rA and rB
       cmp = (reg[code[pc+1]] == reg[code[pc+2]]);
       pc += 4;
       break;
+
     //jmp family opcodes
     case 0x30:       //jmp
       pc += code[pc+1];
@@ -50,6 +52,7 @@ void cpu(){
       if(cmp){ pc += code[pc+1]; }
       else { pc += 4; }
       break;
+
     //other utility opcodes
     case 0x90:      //nop
       pc += 4;
@@ -65,8 +68,8 @@ void cpu(){
   }
 }
 
-void get_code(){
-  FILE *code_file = fopen("code", "rb");
+void get_code(char *filename){
+  FILE *code_file = fopen(filename, "rb");
   fseek(code_file, 0L, SEEK_END);
   int sz = ftell(code_file);
   fseek(code_file, 0L, SEEK_SET);
@@ -74,10 +77,10 @@ void get_code(){
   fclose(code_file);
 }
 
-int emulate(){
+int emulate(char *filename){
   code = (int *)calloc(4096, sizeof(char));
   mem = (int *)calloc(1024, sizeof(char));
-  get_code();
+  get_code(filename);
   unsigned int old_pc = -1;
   while(!hlt && old_pc != pc){
     old_pc = pc;
@@ -92,8 +95,7 @@ int emulate(){
 
 int main(int argc, char **argv){
   printf("Begin emulation:\n\n");
-  int ret = emulate();
+  int ret = emulate(argv[1]);
   printf("End emulation\n");
   return ret;
 }
-

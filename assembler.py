@@ -2,21 +2,25 @@
 
 '''
 This is the assembler I wrote for the bored assembly
-I also wrote
 '''
 
 import sys
 import struct
 
-csm_file = open("code.bd")
-code_file = open("code", "wb")
+if len(sys.argv) < 3:
+    print "usage {0} inFile.bd out".format(sys.argv[0])
+    exit(-1)
+
+csm_file = open(sys.argv[1])
+code_file = open(sys.argv[2], "wb")
 
 def pack(a):
     return struct.pack("I", a)
 
 for l in csm_file.readlines():
     cur = l.strip().split(" ")
-    print cur
+    if "-v" in sys.argv:
+        print cur
     if cur[0] == ";":
       pass
     elif cur[0] == "exit":
