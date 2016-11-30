@@ -6,15 +6,15 @@ unsigned int *mem;
 unsigned int reg[4] = {0,0,0,0};
 unsigned int cmp = 0;
 unsigned int pc = 0;
-unsigned int hlt = 0;
+char hlt = 0;
 
 #define incpc pc+=4
 #define CODE_SIZE 128
 #define MEM_SIZE 64
 
 void print_cpu_state(){
-  printf("CPU State:\nr0:  0x%x\nr1:  0x%x\n"
-  "r2:  0x%x\nr3:  0x%x\ncmp: 0x%x\npc:  0x%x\nhlt: 0x%x\n\n",
+  printf("CPU State:\nr0:  0x%08x\nr1:  0x%08x\n"
+  "r2:  0x%08x\nr3:  0x%08x\ncmp: 0x%08x\npc:  0x%08x\nhlt: 0x%x\n\n",
   reg[0],reg[1],reg[2],reg[3],cmp,pc,hlt);
 }
 
@@ -62,7 +62,7 @@ void cpu(){
       incpc;
       break;
 
-    //math
+    //math - add/sub
     case 0x20:      //add rA to rB; store rA
       reg[code[pc+1]] = reg[code[pc+1]]+reg[code[pc+2]];
       incpc;
@@ -71,12 +71,44 @@ void cpu(){
       reg[code[pc+1]] = reg[code[pc+1]]+code[pc+2];
       incpc;
       break;
+    case 0x22:      //add mem to rA; store in rA
+      reg[code[pc+1]] = reg[code[pc+1]]+mem[code[pc+2]];
+      incpc;
+      break;
+    case 0x23:      //add rA to mem; store in mem
+      mem[code[pc+1]] = mem[code[pc+1]]+reg[code[pc+2]];
+      incpc;
+      break;
+    case 0x24:      //add val to mem; store in mem
+      mem[code[pc+1]] = mem[code[pc+1]]+code[pc+2];
+      incpc;
+      break;
     case 0x25:      //sub rB from rA; store rA
       reg[code[pc+1]] = reg[code[pc+1]]-reg[code[pc+2]];
       incpc;
       break;
     case 0x26:      //sub v1 from rA; store rA
       reg[code[pc+1]] = reg[code[pc+1]]-code[pc+2];
+      incpc;
+      break;
+    case 0x27:      //sub mem from rA; store in rA
+      reg[code[pc+1]] = reg[code[pc+1]]-mem[code[pc+2]];
+      incpc;
+      break;
+    case 0x28:      //sub rA from mem; store in mem
+      mem[code[pc+1]] = mem[code[pc+1]]-reg[code[pc+2]];
+      incpc;
+      break;
+    case 0x29:      //sub val from mem; store in mem
+      mem[code[pc+1]] = mem[code[pc+1]]-code[pc+2];
+      incpc;
+      break;
+    case 0x2a:      //add mem2 to mem1; store in mem1
+      mem[code[pc+1]] = mem[code[pc+1]]+mem[code[pc+2]];
+      incpc;
+      break;
+    case 0x2b:      //sub mem2 from mem1; store in mem1
+      mem[code[pc+1]] = mem[code[pc+1]]-mem[code[pc+2]];
       incpc;
       break;
 

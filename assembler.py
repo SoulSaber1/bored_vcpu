@@ -30,7 +30,13 @@ def is_mem(op):
     return op[0] == "[" and op[-1] == "]"
 
 def get_mem(op):
-    return int(op[1:-1])
+    return get_val(op[1:-1])
+
+def is_val(op):
+    return not is_mem(op) and not is_reg(op)
+
+def get_val(op):
+    return int(op)
 
 def write(vals):
     global code_file
@@ -64,14 +70,14 @@ for l in csm_file.readlines():
     elif cur[0] == "mov":
         if both_reg(cur[1], cur[2]):
             write([0x1, get_reg(cur[1]), get_reg(cur[2])])
+        elif is_reg(cur[1]) and is_val(cur[2]):
+            write([0x2, get_reg(cur[1]), get_val(cur[2])])
+        elif is_mem(cur[1]) and is_reg(cur[2]):
+            write([0x3, get_mem(cur[1]), get_reg(cur[2])])
+        elif is_mem(cur[1]) and is_val(cur[2]):
+            write([0x4, get_mem(cur[1]), get_val(cur[2])])
         elif is_reg(cur[1]) and is_mem(cur[2]):
             write([0x5, get_reg(cur[1]), get_mem(cur[2])])
-        elif is_reg(cur[1]) and not is_reg(cur[2]):
-            write([0x2, get_reg(cur[1]), int(cur[2])])
-        elif not is_reg(cur[1]) and is_reg(cur[2]):
-            write([0x3, int(cur[1]), get_reg(cur[2])])
-        elif not is_reg(cur[1]) and not is_reg(cur[2]):
-            write([0x4, int(cur[1]), int(cur[2])])
 
     #cmp
     elif cur[0] == "cmp":
@@ -81,19 +87,35 @@ for l in csm_file.readlines():
     elif cur[0] == "add":
         if both_reg(cur[1], cur[2]):
             write([0x20, get_reg(cur[1]), get_reg(cur[2])])
-        elif is_reg(cur[1]) and not is_reg(cur[2]):
-            write([0x21, get_reg(cur[1]), int(cur[2])])
+        elif is_reg(cur[1]) and is_val(cur[2]):
+            write([0x21, get_reg(cur[1]), get_val(cur[2])])
+        elif is_reg(cur[1]) and is_mem(cur[2]):
+            write([0x22, get_reg(cur[1]), get_mem(cur[2])])
+        elif is_mem(cur[1]) and is_reg(cur[2]):
+            write([0x23, get_mem(cur[1]), get_reg(cur[2])])
+        elif is_mem(cur[1]) and is_val(cur[2]):
+            write([0x24, get_mem(cur[1]), get_val(cur[2])])
+        elif is_mem(cur[1]) and is_mem(cur[2]):
+            write([0x2a, get_mem(cur[1]), get_mem(cur[2])])
     elif cur[0] == "sub":
         if both_reg(cur[1], cur[2]):
             write([0x25, get_reg(cur[1]), get_reg(cur[2])])
-        elif is_reg(cur[1]) and not is_reg(cur[2]):
-            write([0x26, get_reg(cur[1]), int(cur[2])])
+        elif is_reg(cur[1]) and is_val(cur[2]):
+            write([0x26, get_reg(cur[1]), get_val(cur[2])])
+        elif is_reg(cur[1]) and is_mem(cur[2]):
+            write([0x27, get_reg(cur[1]), get_mem(cur[2])])
+        elif is_mem(cur[1]) and is_reg(cur[2]):
+            write([0x28, get_mem(cur[1]), get_reg(cur[2])])
+        elif is_mem(cur[1]) and is_val(cur[2]):
+            write([0x29, get_mem(cur[1]), get_val(cur[2])])
+        elif is_mem(cur[1]) and is_mem(cur[2]):
+            write([0x2b, get_mem(cur[1]), get_mem(cur[2])])
 
     #jmp
     elif cur[0] == "jmp":
-        write([0x40, 8*int(cur[1])])
+        write([0x40, 8*get_val(cur[1])])
     elif cur[0] == "je":
-        write([0x41, 8*int(cur[1])])
+        write([0x41, 8*get_val(cur[1])])
 
     #stop on unknown instruction
     else:
