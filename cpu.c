@@ -31,12 +31,12 @@ void cpu(){
       incpc;
       break;
     //mov family opcodes
-    case 0x1:       //mov val->reg
-      reg[code[pc+1]] = code[pc+2];
+    case 0x1:       //mov regA->regB
+      reg[code[pc+1]] = reg[code[pc+2]];
       incpc;
       break;
-    case 0x2:       //mov regA->regB
-      reg[code[pc+1]] = reg[code[pc+2]];
+    case 0x2:       //mov val->reg
+      reg[code[pc+1]] = code[pc+2];
       incpc;
       break;
 
@@ -46,6 +46,7 @@ void cpu(){
       incpc;
       break;
 
+    //math
     case 0x20:      //add rA to rB; store rA
       reg[0] = reg[code[pc+1]]+reg[code[pc+2]];
       incpc;
@@ -102,6 +103,10 @@ int emulate(char *filename){
 }
 
 int main(int argc, char **argv){
+  if(argc < 2){
+    printf("Usage is %s input\n", argv[0]);
+    exit(-1);
+  }
   printf("Begin emulation:\n\n");
   int ret = emulate(argv[1]);
   printf("End emulation\n");
