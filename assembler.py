@@ -117,6 +117,10 @@ for l in csm_file.readlines():
     elif cur[0] == "je":
         write([0x41, 8*get_val(cur[1])])
 
+    #interrupt
+    elif cur[0] == "int":
+        write([0x100, get_val(cur[1])])    
+
     #stop on unknown instruction
     else:
         print "Instruction not understood"

@@ -8,6 +8,7 @@ unsigned int *mem;
 unsigned int reg[4] = {0,0,0,0};
 unsigned int cmp = 0;
 unsigned int pc = 0;
+int interrupt = 0;
 char hlt = 0;
 
 
@@ -138,6 +139,13 @@ void cpu(){
       print_mem_state();
       incpc;
       break;
+
+    //interrupt
+    case 0x100:
+      interrupt = code[pc+1];
+      incpc;
+      break;
+
     default:
       printf("INVALID OPCODE\n");
       hlt = 1;
@@ -155,6 +163,11 @@ void get_code(char *filename){
   fclose(code_file);
 }
 
+//placeholder for interrupt
+int do_interrupt(){
+  printf("Placeholder for interrupt\nInterrupt %d used\n\n", interrupt);
+}
+
 int emulate(char *filename){
   code = (unsigned int *)calloc(CODE_SIZE, sizeof(int));
   mem = (unsigned int *)calloc(MEM_SIZE, sizeof(int));
@@ -163,6 +176,10 @@ int emulate(char *filename){
   while(!hlt && old_pc != pc){
     old_pc = pc;
     cpu();
+    if(interrupt){
+      do_interrupt();
+      interrupt = 0;
+    }
   }
   if(old_pc == pc && !hlt){ printf("\npc didnt change; program hung\n"); }
   print_cpu_state();

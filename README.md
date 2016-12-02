@@ -24,9 +24,12 @@ eventually facilitate more instructions. Probably.
  - cmp
  - jmp
  - nop
- 
+ - int
+
  **"syscalls"**
  - cpu = display the current CPU state
  - mem = display the current MEM state
 
-
+ **Interrupts**
+ Currently under development.
+ Framework exists, need to be implimented
