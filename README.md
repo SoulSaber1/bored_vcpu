@@ -26,7 +26,7 @@ eventually facilitate more instructions. Probably.
  - nop
  - int
 
- **"syscalls"**
+ **semi syscalls**
  - cpu = display the current CPU state
  - mem = display the current MEM state
 
