@@ -14,7 +14,7 @@ The bored_assembler.py file will read the code.bd file, and assemble it into the
 Every instruction is 32 bytes long. This doesn't really matter for now, but will
 eventually facilitate more instructions. Probably.
 
-####The following instructions are currently supported by bored:
+#### The following instructions are currently supported by bored:
 **Unless otherwise stated, it generally follows Intel syntax**
 
  - mov
